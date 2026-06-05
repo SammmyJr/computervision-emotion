@@ -44,9 +44,12 @@ model = CNN(in_channels=3, num_classes=7).to(device)
 
 # Check if theres a file to load
 if Path("models/EmotionCNN.pt").is_file():
+    print("Loading model...")
     model.load_state_dict(torch.load("models/EmotionCNN.pt"))
+    print("Loaded!")
 # Otherwise, run training
 else:
+    print("Training model...")
     # Loss function
     # Going with triplet margin loss as it's most efficient for facial recognition
     # Minimises distance to correct output while maximising distance to incorrect outputs,
@@ -71,8 +74,12 @@ else:
             loss.backward()
             optimiser.step()
 
+    print("Trained!")
+    #
     # Save model
+    print("Saving model...")
     torch.save(model.state_dict(), "models/EmotionCNN.pt")
+    print("Saved!")
 
 # Evaluation
 acc = torchmetrics.Accuracy(task="multiclass", num_classes=7).to(device)
