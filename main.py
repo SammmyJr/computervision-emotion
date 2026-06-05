@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+from pathlib import Path
 
 import torch
 from torch import optim
@@ -41,29 +42,37 @@ test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=Tr
 # Load CNN
 model = CNN(in_channels=3, num_classes=7).to(device)
 
-# Loss function
-# Going with triplet margin loss as it's most efficient for facial recognition
-# Minimises distance to correct output while maximising distance to incorrect outputs,
-# This is good for emotion recognition because it's never binary, it's more on a spectrum
-# Will need to reimplement this, needs a CNN overhaul as well...
-criterion = nn.CrossEntropyLoss()
+# Check if theres a file to load
+if Path("models/EmotionCNN.pt").is_file():
+    model.load_state_dict(torch.load("models/EmotionCNN.pt"))
+# Otherwise, run training
+else:
+    # Loss function
+    # Going with triplet margin loss as it's most efficient for facial recognition
+    # Minimises distance to correct output while maximising distance to incorrect outputs,
+    # This is good for emotion recognition because it's never binary, it's more on a spectrum
+    # Will need to reimplement this, needs a CNN overhaul as well...
+    criterion = nn.CrossEntropyLoss()
 
-# Optimiser
-optimiser = optim.Adam(model.parameters(), lr=0.001)
+    # Optimiser
+    optimiser = optim.Adam(model.parameters(), lr=0.001)
 
-# Training
-num_epochs = 10
-for epoch in range(num_epochs):
-    print(f"Epoch {epoch + 1} / {num_epochs}")
+    # Training
+    num_epochs = 10
+    for epoch in range(num_epochs):
+        print(f"Epoch {epoch + 1} / {num_epochs}")
 
-    for batch_idx, (data, targets) in enumerate(tqdm(train_loader)):
-        data = data.to(device)
-        targets = targets.to(device)
-        scores = model(data)
-        loss = criterion(scores, targets)
-        optimiser.zero_grad()
-        loss.backward()
-        optimiser.step()
+        for batch_idx, (data, targets) in enumerate(tqdm(train_loader)):
+            data = data.to(device)
+            targets = targets.to(device)
+            scores = model(data)
+            loss = criterion(scores, targets)
+            optimiser.zero_grad()
+            loss.backward()
+            optimiser.step()
+
+    # Save model
+    torch.save(model.state_dict(), "models/EmotionCNN.pt")
 
 # Evaluation
 acc = torchmetrics.Accuracy(task="multiclass", num_classes=7).to(device)
