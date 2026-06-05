@@ -64,3 +64,31 @@ for epoch in range(num_epochs):
         optimiser.zero_grad()
         loss.backward()
         optimiser.step()
+
+# Evaluation
+acc = torchmetrics.Accuracy(task="multiclass", num_classes=7).to(device)
+precision = torchmetrics.Precision(
+    task="multiclass", num_classes=7, average="weighted"
+).to(device)
+recall = torchmetrics.Recall(task="multiclass", num_classes=7, average="weighted").to(
+    device
+)
+
+# Iterate over batches, check accuracy
+model.eval()
+with torch.no_grad():
+    for images, labels in test_loader:
+        # Move to GPU
+        images = images.to(device)
+        labels = labels.to(device)
+
+        # Get predictions
+        outputs = model(images)
+        _, preds = torch.max(outputs, 1)
+        acc(preds, labels)
+        precision(preds, labels)
+        recall(preds, labels)
+
+# Compute total accuracy
+test_accuracy = acc.compute()
+print(f"Test accuracy: {test_accuracy}")
