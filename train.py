@@ -49,7 +49,6 @@ device = "mps" if torch.backends.mps.is_available() else "cpu"
 # Datasets
 # Using ImageFolder because it automatically maps subfolders as classes! Handy!
 train_dataset = datasets.ImageFolder(root="dataset/train", transform=train_transform)
-
 test_dataset = datasets.ImageFolder(root="dataset/test", transform=test_transform)
 
 # Dataloaders
