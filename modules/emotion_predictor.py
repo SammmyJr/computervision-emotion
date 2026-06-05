@@ -22,7 +22,12 @@ class EmotionPredictor:
         self.model.eval()
 
         # Same transform as used during training
-        self.transform = transforms.ToTensor()
+        self.transform = transforms.Compose(
+            [
+                transforms.ToTensor(),
+                transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
+            ]
+        )
 
     def predict(self, frame, face_coords):
         """

@@ -33,6 +33,7 @@ train_transform = transforms.Compose(
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
         transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ]
 )
 
@@ -40,6 +41,7 @@ train_transform = transforms.Compose(
 test_transform = transforms.Compose(
     [
         transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ]
 )
 
