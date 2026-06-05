@@ -18,24 +18,41 @@ import torchvision.transforms as transforms
 
 import torchmetrics
 
-from cnn import CNN
+from modules.cnn import CNN
+
+# Hyperparameters
+force_train = True
+num_epochs = 10
+batch_size = 60
+
+# Transforms
+train_transform = transforms.Compose(
+    [
+        transforms.RandomRotation(15),
+        transforms.RandomHorizontalFlip(),
+        transforms.ColorJitter(brightness=0.2, contrast=0.2),
+        transforms.RandomAffine(degrees=0, translate=(0.1, 0.1)),
+        transforms.ToTensor(),
+    ]
+)
+
+# Testing: No augmentation (use raw images)
+test_transform = transforms.Compose(
+    [
+        transforms.ToTensor(),
+    ]
+)
 
 # Device setup
 device = "mps" if torch.backends.mps.is_available() else "cpu"
 
 # Datasets
 # Using ImageFolder because it automatically maps subfolders as classes! Handy!
-train_dataset = datasets.ImageFolder(
-    root="dataset/train", transform=transforms.ToTensor()
-)
+train_dataset = datasets.ImageFolder(root="dataset/train", transform=train_transform)
 
-test_dataset = datasets.ImageFolder(
-    root="dataset/test", transform=transforms.ToTensor()
-)
+test_dataset = datasets.ImageFolder(root="dataset/test", transform=test_transform)
 
 # Dataloaders
-batch_size = 60
-
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
 test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
 
@@ -43,7 +60,7 @@ test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=Tr
 model = CNN(in_channels=3, num_classes=7).to(device)
 
 # Check if theres a file to load
-if Path("models/EmotionCNN.pt").is_file():
+if Path("models/EmotionCNN.pt").is_file() and not force_train:
     print("Loading model...")
     model.load_state_dict(torch.load("models/EmotionCNN.pt"))
     print("Loaded!")
@@ -61,7 +78,6 @@ else:
     optimiser = optim.Adam(model.parameters(), lr=0.001)
 
     # Training
-    num_epochs = 10
     for epoch in range(num_epochs):
         print(f"Epoch {epoch + 1} / {num_epochs}")
 
