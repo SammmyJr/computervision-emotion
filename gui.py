@@ -52,7 +52,7 @@ def main():
 
         # Initialize model
         print("Loading trained model...")
-        model = CNN(in_channels=3, num_classes=7).to(device)
+        model = CNN(in_channels=3, num_classes=8).to(device)
         model.load_state_dict(torch.load("models/EmotionCNN.pt", map_location=device))
         print("Model loaded successfully!")
 
