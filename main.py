@@ -39,13 +39,28 @@ train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=
 test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
 
 # Load CNN
-model = CNN(in_channels=1, num_classes=7).to(device)
+model = CNN(in_channels=3, num_classes=7).to(device)
 
 # Loss function
 # Going with triplet margin loss as it's most efficient for facial recognition
 # Minimises distance to correct output while maximising distance to incorrect outputs,
 # This is good for emotion recognition because it's never binary, it's more on a spectrum
-criterion = nn.TripletMarginLoss()
+# Will need to reimplement this, needs a CNN overhaul as well...
+criterion = nn.CrossEntropyLoss()
 
 # Optimiser
 optimiser = optim.Adam(model.parameters(), lr=0.001)
+
+# Training
+num_epochs = 10
+for epoch in range(num_epochs):
+    print(f"Epoch {epoch + 1} / {num_epochs}")
+
+    for batch_idx, (data, targets) in enumerate(tqdm(train_loader)):
+        data = data.to(device)
+        targets = targets.to(device)
+        scores = model(data)
+        loss = criterion(scores, targets)
+        optimiser.zero_grad()
+        loss.backward()
+        optimiser.step()

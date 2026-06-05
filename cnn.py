@@ -22,7 +22,7 @@ class CNN(nn.Module):
         # 2nd convolutional layer
         self.conv2 = nn.Conv2d(in_channels=8, out_channels=16, kernel_size=3, padding=1)
         # Fully connected layer
-        self.fc1 = nn.Linear(16 * 7 * 7, num_classes)
+        self.fc1 = nn.Linear(16 * 12 * 12, num_classes)
 
     def forward(self, x):
         """
@@ -39,9 +39,6 @@ class CNN(nn.Module):
         x = self.pool(x)  # Apply max pooling
         x = F.relu(self.conv2(x))  # Apply second convolution and ReLU activation
         x = self.pool(x)  # Apply max pooling
-        x = x.reshape(x.shape[0], -1)  # Flatten the tensor
-        x = self.fc1(x)  # Apply fully connected layer
-        return x
         x = x.reshape(x.shape[0], -1)  # Flatten the tensor
         x = self.fc1(x)  # Apply fully connected layer
         return x
