@@ -28,6 +28,7 @@ batch_size = 60
 # Transforms
 train_transform = transforms.Compose(
     [
+        transforms.Resize((48, 48)),
         transforms.RandomRotation(15),
         transforms.RandomHorizontalFlip(),
         transforms.ColorJitter(brightness=0.2, contrast=0.2),
@@ -40,6 +41,7 @@ train_transform = transforms.Compose(
 # Testing: No augmentation (use raw images)
 test_transform = transforms.Compose(
     [
+        transforms.Resize((48, 48)),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.5, 0.5, 0.5]),
     ]
@@ -99,11 +101,11 @@ else:
     print("Saved!")
 
 # Evaluation
-acc = torchmetrics.Accuracy(task="multiclass", num_classes=7).to(device)
+acc = torchmetrics.Accuracy(task="multiclass", num_classes=8).to(device)
 precision = torchmetrics.Precision(
-    task="multiclass", num_classes=7, average="weighted"
+    task="multiclass", num_classes=8, average="weighted"
 ).to(device)
-recall = torchmetrics.Recall(task="multiclass", num_classes=7, average="weighted").to(
+recall = torchmetrics.Recall(task="multiclass", num_classes=8, average="weighted").to(
     device
 )
 

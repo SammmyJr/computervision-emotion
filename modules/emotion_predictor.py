@@ -7,7 +7,16 @@ from torchvision import transforms
 class EmotionPredictor:
     """Predicts emotions from face crops using trained CNN model."""
 
-    EMOTIONS = ["angry", "disgust", "fear", "happy", "neutral", "sad", "surprise"]
+    EMOTIONS = [
+        "angry",
+        "contempt",
+        "disgust",
+        "fear",
+        "happy",
+        "neutral",
+        "sad",
+        "surprise",
+    ]
 
     def __init__(self, model, device):
         """
