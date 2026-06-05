@@ -40,4 +40,12 @@ test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=Tr
 
 # Load CNN
 model = CNN(in_channels=1, num_classes=7).to(device)
-print(model)
+
+# Loss function
+# Going with triplet margin loss as it's most efficient for facial recognition
+# Minimises distance to correct output while maximising distance to incorrect outputs,
+# This is good for emotion recognition because it's never binary, it's more on a spectrum
+criterion = nn.TripletMarginLoss()
+
+# Optimiser
+optimiser = optim.Adam(model.parameters(), lr=0.001)
