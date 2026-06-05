@@ -17,13 +17,17 @@ import torchvision.transforms as transforms
 
 import torchmetrics
 
-batch_size = 60
 
+# Datasets
 # Using ImageFolder because it automatically maps subfolders as classes! Handy!
 train_dataset = datasets.ImageFolder(
-    root="datasets/train", transform=transforms.ToTensor()
+    root="dataset/train", transform=transforms.ToTensor()
 )
 
-test_dataset = datasets.ImageFolder(
-    root="datasets/test", transform=transforms.ToTensor()
-)
+test_dataset = datasets.ImageFolder(root="datasettest", transform=transforms.ToTensor())
+
+# Dataloaders
+batch_size = 60
+
+train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=True)
